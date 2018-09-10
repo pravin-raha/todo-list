@@ -10,18 +10,18 @@ import doobie.util.update.Update0
 
 private object UserSql {
   def insert(user: User): Update0 =
-    sql"insert into user (id, name, email) values (${user.id.get}, ${user.name}, ${user.email})".updateWithLogHandler(LogHandler.jdkLogHandler)
+    sql"insert into USER (id, name, email) values (${user.id.get}, ${user.name}, ${user.email})".updateWithLogHandler(LogHandler.jdkLogHandler)
 
   def select(id: String): doobie.Query0[User] = sql"""
     SELECT *
-    FROM user
+    FROM USER
     WHERE ID = $id
   """.queryWithLogHandler[User](LogHandler.jdkLogHandler)
 
 
-  def delete(id: String): doobie.Update0 = sql"delete from user where id = $id".updateWithLogHandler(LogHandler.jdkLogHandler)
+  def delete(id: String): doobie.Update0 = sql"delete from USER where id = $id".updateWithLogHandler(LogHandler.jdkLogHandler)
 
-  def update(user: User): doobie.Update0 = sql"update user set id = ${user.id}, name = ${user.name}, email = ${user.email} where id = ${user.id}".updateWithLogHandler(LogHandler.jdkLogHandler)
+  def update(user: User): doobie.Update0 = sql"update USER set id = ${user.id}, name = ${user.name}, email = ${user.email} where id = ${user.id}".updateWithLogHandler(LogHandler.jdkLogHandler)
 }
 
 class UserRepositoryInterpreter[F[_] : Async](xa: HikariTransactor[F])

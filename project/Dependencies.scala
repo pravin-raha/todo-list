@@ -3,11 +3,13 @@ import sbt._
 object Dependencies {
   lazy val doobieVersion = "0.5.3"
   lazy val http4sVersion = "1.0.0-SNAPSHOT"
+  lazy val flywayDb = "5.1.4"
 
   val doobie = Seq(
     "org.tpolecat" %% "doobie-core" % doobieVersion,
     "org.tpolecat" %% "doobie-specs2" % doobieVersion,
-    "org.tpolecat" %% "doobie-hikari" % doobieVersion
+    "org.tpolecat" %% "doobie-hikari" % doobieVersion,
+    "org.flywaydb" % "flyway-core" % flywayDb
   )
 
   val http4s = Seq(

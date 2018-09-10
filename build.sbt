@@ -8,8 +8,13 @@ lazy val root = (project in file("."))
     scalacOptions += "-Ypartial-unification",
     libraryDependencies ++= doobie,
     libraryDependencies ++= http4s,
-    libraryDependencies ++= common
+    libraryDependencies ++= common,
+    flywayUrl := "jdbc:mysql://localhost:3306/world",
+    flywayUser := "root",
+    flywayLocations += "db/migration"
   )
   .settings(
     resolvers += Resolver.sonatypeRepo("snapshots")
-  )
+  ).enablePlugins(FlywayPlugin)
+
+
