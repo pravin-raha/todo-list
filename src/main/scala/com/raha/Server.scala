@@ -6,12 +6,16 @@ import com.raha.domain.user.UserService
 import com.raha.repository.doobie.UserRepositoryInterpreter
 import com.raha.service.UserEndpoint
 import fs2.{Stream, StreamApp}
+import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
+import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import org.http4s.server.blaze.BlazeBuilder
 import pureconfig.loadConfigOrThrow
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Server extends StreamApp[IO] {
+
+  implicit def unsafeLogger: SelfAwareStructuredLogger[IO] = Slf4jLogger.unsafeCreate[IO]
 
   override def stream(args: List[String], requestShutdown: IO[Unit]): fs2.Stream[IO, StreamApp.ExitCode] = {
     for {

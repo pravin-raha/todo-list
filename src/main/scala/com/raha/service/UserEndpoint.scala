@@ -1,7 +1,6 @@
 package com.raha.service
 
 import _root_.io.chrisdavenport.log4cats._
-import _root_.io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import cats.effect.Async
 import cats.syntax.all._
 import com.raha.domain.user.{User, UserService}
@@ -11,9 +10,7 @@ import org.http4s._
 import org.http4s.circe._
 import org.http4s.dsl._
 
-class UserEndpoint[F[_] : Async](userService: UserService[F]) extends Http4sDsl[F] {
-
-  implicit def unsafeLogger: SelfAwareStructuredLogger[F] = Slf4jLogger.unsafeCreate[F]
+class UserEndpoint[F[_] : Async](userService: UserService[F])(implicit unsafeLogger: SelfAwareStructuredLogger[F]) extends Http4sDsl[F] {
 
   implicit val decoder: EntityDecoder[F, User] = jsonOf[F, User]
 
@@ -21,27 +18,19 @@ class UserEndpoint[F[_] : Async](userService: UserService[F]) extends Http4sDsl[
     case req@POST -> Root / "user" =>
       for {
         user <- req.as[User]
-        res <- userService.createUser(user).attempt.flatMap {
-          case Left(error) => for {
-            res <- Ok(error.getMessage)
-          } yield res
-          case Right(_) => Ok(user.asJson)
-        }
+        res <- userService.createUser(user)
+          .flatMap(_ => Ok(user.asJson))
+          .handleErrorWith { case error => ServiceUnavailable(error.getMessage) }
       } yield res
 
-    case GET -> Root / "user" / id =>
-      for {
-        user <- userService.getUser(id).attempt.flatMap {
-          case Left(error) => for {
-            res <- NotFound(error.getMessage)
-          } yield res
-          case Right(u) => Ok(u.asJson)
-        }
-      } yield user
-  }
+    case GET -> Root / "user" / id => userService.getUser(id).flatMap {
+      case None => NotFound("User not found")
+      case Some(user) => Ok(user.asJson)
+    }.handleErrorWith { case error => ServiceUnavailable(error.getMessage) }
 
+  }
 }
 
 object UserEndpoint {
-  def apply[F[_] : Async](userService: UserService[F]): UserEndpoint[F] = new UserEndpoint[F](userService)
+  def apply[F[_] : Async](userService: UserService[F])(implicit unsafeLogger: SelfAwareStructuredLogger[F]): UserEndpoint[F] = new UserEndpoint[F](userService)
 }
