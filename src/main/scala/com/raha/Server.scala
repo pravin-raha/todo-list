@@ -1,7 +1,7 @@
 package com.raha
 
 import cats.effect.IO
-import com.raha.config.DataBaseConfig
+import com.raha.config.{DataBaseConfig, ServerConfig}
 import com.raha.domain.user.UserService
 import com.raha.repository.doobie.UserRepositoryInterpreter
 import com.raha.service.UserEndpoint
@@ -15,12 +15,13 @@ object Server extends StreamApp[IO] {
 
   override def stream(args: List[String], requestShutdown: IO[Unit]): fs2.Stream[IO, StreamApp.ExitCode] = {
     for {
-      dataBaseConfig <-  Stream.eval(IO(loadConfigOrThrow[DataBaseConfig]("database")))
+      dataBaseConfig <- Stream.eval(IO(loadConfigOrThrow[DataBaseConfig]("database")))
+      serverConfig <- Stream.eval(IO(loadConfigOrThrow[ServerConfig]("server")))
       xa <- Stream.eval(DataBaseConfig.dbTransactor[IO](dataBaseConfig))
       userRepoInterpreter = UserRepositoryInterpreter(xa = xa)
       userService = UserService(userRepoInterpreter)
       exitCode <- BlazeBuilder[IO]
-        .bindHttp(8080, "localhost")
+        .bindHttp(serverConfig.port, serverConfig.host)
         .mountService(UserEndpoint[IO](userService = userService).service, "/")
         .serve
     } yield exitCode
