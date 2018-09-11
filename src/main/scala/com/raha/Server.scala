@@ -2,9 +2,10 @@ package com.raha
 
 import cats.effect.IO
 import com.raha.config.{DataBaseConfig, ServerConfig}
+import com.raha.domain.todo.TodoService
 import com.raha.domain.user.UserService
-import com.raha.repository.doobie.UserRepositoryInterpreter
-import com.raha.service.UserEndpoint
+import com.raha.repository.doobie.{TodoRepositoryInterpreter, UserRepositoryInterpreter}
+import com.raha.service.{TodoEndpoint, UserEndpoint}
 import fs2.{Stream, StreamApp}
 import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
@@ -24,9 +25,12 @@ object Server extends StreamApp[IO] {
       xa <- Stream.eval(DataBaseConfig.dbTransactor[IO](dataBaseConfig))
       userRepoInterpreter = UserRepositoryInterpreter(xa = xa)
       userService = UserService(userRepoInterpreter)
+      todoRepoInterpreter = TodoRepositoryInterpreter(xa = xa)
+      todoService = TodoService(todoRepository = todoRepoInterpreter)
       exitCode <- BlazeBuilder[IO]
         .bindHttp(serverConfig.port, serverConfig.host)
         .mountService(UserEndpoint[IO](userService = userService).service, "/")
+        .mountService(TodoEndpoint[IO](todoService).service, "/")
         .serve
     } yield exitCode
 
