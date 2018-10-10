@@ -6,13 +6,13 @@ class TodoService[F[_] : Async](todoRepository: TodoRepository[F]) {
 
   def create(element: Element, todoId: Option[Int], userId: Int): F[Int] = todoRepository.addElement(element, todoId, userId)
 
-  def delete(id: Int): F[Int] = todoRepository.delete(id)
+  def delete(id: Int, userId: Int): F[Int] = todoRepository.deleteTodo(id, userId)
 
   def update(todo: Todo): F[Int] = todoRepository.update(todo)
 
-  def get(id: Int, userId: Int): F[Option[Todo]] = todoRepository.getById(id, userId)
+  def get(id: Int, userId: Int): F[Option[Todo]] = todoRepository.getTodoById(id, userId)
 
-  def getAll(userId: Int): F[List[Todo]] = todoRepository.getAll(userId)
+  def getAll(userId: Int): F[List[Todo]] = todoRepository.getAllTodo(userId)
 }
 
 object TodoService {

@@ -4,11 +4,13 @@ trait TodoRepository[F[_]] {
 
   def addElement(element: Element, todoId: Option[Int], userId: Int): F[Int]
 
-  def getById(todoId: Int, userId: Int): F[Option[Todo]]
+  def getTodoById(todoId: Int, userId: Int): F[Option[Todo]]
 
-  def getAll(userId: Int): F[List[Todo]]
+  def getAllTodo(userId: Int): F[List[Todo]]
 
-  def delete(id: Int): F[Int]
+  def deleteTodo(id: Int, userId: Int): F[Int]
+
+  def deleteTodoElement(todoId: Int, userId: Int, elementId: Int): F[Int]
 
   def update(todo: Todo): F[Int]
 }

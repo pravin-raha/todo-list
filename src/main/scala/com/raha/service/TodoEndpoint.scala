@@ -29,10 +29,10 @@ class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[
       elementRequest <- req.as[ElementRequest]
       res <- todoService.create(elementRequest.into[Element].transform, elementRequest.todoId, 101)
         .flatMap(e => Ok())
-      //        .handleErrorWith(e => ServiceUnavailable())
+        .handleErrorWith(e => ServiceUnavailable())
     } yield res
 
-    case DELETE -> Root / "todo" / IntVar(id) => todoService.delete(id).flatMap(_ => Ok("todo deleted"))
+    case DELETE -> Root / "todo" / IntVar(id) => todoService.delete(id,101).flatMap(_ => Ok("todo deleted"))
 
     case req@PUT -> Root / "todo" => for {
       todo <- req.as[Todo]
