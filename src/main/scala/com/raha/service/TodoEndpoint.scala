@@ -18,7 +18,7 @@ class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[
   implicit val decoder: EntityDecoder[F, Todo] = jsonOf[F, Todo]
 
   def service: HttpRoutes[F] = HttpRoutes.of[F] {
-    case GET -> Root / "todo" / IntVar(id) => todoService.get(id, 101).flatMap {
+    case GET -> Root / "todo" / IntVar(id) => todoService.get(id).flatMap {
       case Some(todo) => Ok(todo.asJson)
       case None => NotFound("Todo Item not found")
     }.handleErrorWith(e => ServiceUnavailable())
@@ -32,12 +32,16 @@ class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[
         .handleErrorWith(e => ServiceUnavailable())
     } yield res
 
-    case DELETE -> Root / "todo" / IntVar(id) => todoService.delete(id,101).flatMap(_ => Ok("todo deleted"))
+    case DELETE -> Root / "todo" / IntVar(todoId) => todoService.deleteTodo(todoId).flatMap(_ => Ok("todo deleted"))
 
-    case req@PUT -> Root / "todo" => for {
-      todo <- req.as[Todo]
-      res <- todoService.update(todo).flatMap(_ => Ok(todo.asJson))
+    case DELETE -> Root / "todo" / IntVar(todoId) / IntVar(elementId) =>
+      todoService.deleteTodoElement(elementId).flatMap(_ => Ok("element deleted"))
+
+    case req@PUT -> Root / "todo" / IntVar(todoId) => for {
+      element <- req.as[Element]
+      res <- todoService.update(element).flatMap(_ => Ok(element.asJson))
     } yield res
+
   }
 }
 
