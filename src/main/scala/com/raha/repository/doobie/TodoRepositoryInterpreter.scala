@@ -5,7 +5,7 @@ import cats.free.Free
 import cats.instances.list._
 import cats.instances.option._
 import cats.syntax.traverse._
-import com.raha.domain.todo.{Element, Todo, TodoRepository}
+import com.raha.domain.todo.{Element, ElementForm, Todo, TodoRepository}
 import doobie.free.connection
 import doobie.free.connection.ConnectionIO
 import doobie.hikari.HikariTransactor
@@ -16,21 +16,18 @@ object TodoSql {
 
   implicit val han = LogHandler.jdkLogHandler
 
-  def insert(element: Element, todoId: Option[Int], userId: Int): ConnectionIO[Int] =
-    todoId match {
-      case Some(tId) => insertElement(element, tId)
-      case None => for {
-        tId <- insertTodo(userId)
-        eId <- insertElement(element, tId)
-      } yield eId
-    }
+  def insertTodoSql(userId: Int, element: ElementForm): ConnectionIO[Int] =
+    for {
+      tId <- insertTodo(userId)
+      eId <- insertElement(element, tId)
+    } yield eId
 
   private def insertTodo(userId: Int): ConnectionIO[Int] =
     sql"""INSERT INTO TODO (user_id) values ($userId)"""
       .update
       .withUniqueGeneratedKeys[Int]("todo_id")
 
-  private def insertElement(element: Element, todoId: Int): ConnectionIO[Int] = {
+  def insertElement(element: ElementForm, todoId: Int): ConnectionIO[Int] = {
     sql"""
           INSERT INTO TODOELEMENT
           (TODO_ID,TITLE,COMPLETED,SORT_ORDER)
@@ -86,8 +83,8 @@ class TodoRepositoryInterpreter[F[_] : Async](xa: HikariTransactor[F]) extends T
 
   import TodoSql._
 
-  override def addElement(element: Element, todoId: Option[Int], userId: Int): F[Int] =
-    insert(element, todoId, userId).transact(xa)
+  override def addElement(todoId: Int, elementForm: ElementForm): F[Int] =
+    insertElement(elementForm, todoId = todoId).transact(xa)
 
   override def getTodoById(todoId: Int): F[Option[Todo]] = selectTodoById(todoId)
     .map(rec => {
@@ -114,6 +111,9 @@ class TodoRepositoryInterpreter[F[_] : Async](xa: HikariTransactor[F]) extends T
   override def update(element: Element): F[Int] = updateSQL(element).run.transact(xa)
 
   override def deleteTodoElement(elementId: Int): F[Int] = deleteTodoElementByElementId(elementId).run.transact(xa)
+
+  override def addTodo(userId: Int, elementForm: ElementForm): F[Int] = insertTodoSql(userId, elementForm).transact(xa)
+
 }
 
 object TodoRepositoryInterpreter {

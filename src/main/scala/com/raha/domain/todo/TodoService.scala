@@ -4,7 +4,9 @@ import cats.effect.Async
 
 class TodoService[F[_] : Async](todoRepository: TodoRepository[F]) {
 
-  def create(element: Element, todoId: Option[Int], userId: Int): F[Int] = todoRepository.addElement(element, todoId, userId)
+  def createElement(todoId: Int, elementForm: ElementForm): F[Int] = todoRepository.addElement(todoId, elementForm)
+
+  def createTodo(userId: Int, elementForm: ElementForm): F[Int] = todoRepository.addTodo(userId, elementForm)
 
   def deleteTodo(id: Int): F[Int] = todoRepository.deleteTodo(id)
 
