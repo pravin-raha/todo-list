@@ -9,6 +9,7 @@ object Dependencies {
     "org.tpolecat" %% "doobie-core" % doobieVersion,
     "org.tpolecat" %% "doobie-specs2" % doobieVersion,
     "org.tpolecat" %% "doobie-hikari" % doobieVersion,
+    "org.tpolecat" %% "doobie-postgres" % doobieVersion,
     "org.flywaydb" % "flyway-core" % flywayDb
   )
 
@@ -27,7 +28,8 @@ object Dependencies {
     "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
     "com.github.pureconfig" %% "pureconfig" % "0.9.2",
     "io.chrisdavenport" %% "log4cats-slf4j" % "0.1.1",
-    "ch.qos.logback" % "logback-classic" % "1.2.3"
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "io.scalaland" %% "chimney" % "0.2.1"
   )
 
 }

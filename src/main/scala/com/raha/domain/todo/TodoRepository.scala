@@ -2,13 +2,15 @@ package com.raha.domain.todo
 
 trait TodoRepository[F[_]] {
 
-  def add(todo: Todo): F[Int]
+  def addElement(element: Element, todoId: Option[Int], userId: Int): F[Int]
 
-  def getById(id: Int): F[Option[Todo]]
+  def getTodoById(todoId: Int): F[Option[Todo]]
 
-  def getAll: F[List[Todo]]
+  def getAllTodo(userId: Int): F[List[Todo]]
 
-  def delete(id: Int): F[Int]
+  def deleteTodo(id: Int): F[Int]
 
-  def update(todo: Todo): F[Int]
+  def deleteTodoElement(elementId: Int): F[Int]
+
+  def update(element: Element): F[Int]
 }

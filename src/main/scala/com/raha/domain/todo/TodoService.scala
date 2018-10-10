@@ -4,15 +4,17 @@ import cats.effect.Async
 
 class TodoService[F[_] : Async](todoRepository: TodoRepository[F]) {
 
-  def create(todo: Todo): F[Int] = todoRepository.add(todo)
+  def create(element: Element, todoId: Option[Int], userId: Int): F[Int] = todoRepository.addElement(element, todoId, userId)
 
-  def delete(id: Int): F[Int] = todoRepository.delete(id)
+  def deleteTodo(id: Int): F[Int] = todoRepository.deleteTodo(id)
 
-  def update(todo: Todo): F[Int] = todoRepository.update(todo)
+  def deleteTodoElement(elementId: Int): F[Int] = todoRepository.deleteTodoElement(elementId)
 
-  def get(id: Int): F[Option[Todo]] = todoRepository.getById(id)
+  def update(element: Element): F[Int] = todoRepository.update(element)
 
-  def getAll: F[List[Todo]] = todoRepository.getAll
+  def get(id: Int): F[Option[Todo]] = todoRepository.getTodoById(id)
+
+  def getAll(userId: Int): F[List[Todo]] = todoRepository.getAllTodo(userId)
 }
 
 object TodoService {
