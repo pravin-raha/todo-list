@@ -9,6 +9,8 @@ import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{HttpRoutes, _}
 
+import scala.language.higherKinds
+
 
 class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[F] {
 
@@ -17,7 +19,6 @@ class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[
   implicit val decoder: EntityDecoder[F, Todo] = jsonOf[F, Todo]
 
   def service: HttpRoutes[F] = HttpRoutes.of[F] {
-
     case GET -> Root / "todo" / IntVar(id) => todoService.get(id).flatMap {
       case Some(todo) => Ok(todo.asJson)
       case None => NotFound("Todo Item not found")

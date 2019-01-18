@@ -23,14 +23,14 @@ object TodoSql {
     } yield eId
 
   private def insertTodo(userId: Int): ConnectionIO[Int] =
-    sql"""INSERT INTO TODO (user_id) values ($userId)"""
+    sql"""INSERT INTO todo (user_id) values ($userId)"""
       .update
       .withUniqueGeneratedKeys[Int]("todo_id")
 
   def insertElement(element: ElementForm, todoId: Int): ConnectionIO[Int] = {
     sql"""
-          INSERT INTO TODOELEMENT
-          (TODO_ID,TITLE,COMPLETED,SORT_ORDER)
+          INSERT INTO todoelement
+          (todo_id,title,completed,sort_order)
           VALUES
           ($todoId, ${element.title},${element.completed},${element.sortOrder})
       """
@@ -40,20 +40,20 @@ object TodoSql {
 
   def selectAll(userId: Int): doobie.ConnectionIO[List[(Int, Option[Element])]] =
     sql"""
-        select todo.TODO_ID, ELEMENT_ID, TITLE, COMPLETED, SORT_ORDER
+        select todo.todo_id, element_id, title, completed, sort_order
         from todo
         LEFT join todoelement
         on (todo.todo_id = todoelement.todo_id)
-        WHERE USER_ID = $userId;
+        WHERE user_id = $userId;
       """
       .query[(Int, Option[Element])]
       .to[List]
 
   def selectTodoById(todoId: Int): doobie.ConnectionIO[List[(Int, Element)]] =
     sql"""
-        select TODO_ID, ELEMENT_ID, TITLE, COMPLETED, SORT_ORDER
+        select todo_id, element_id, title, completed, sort_order
         from todoelement
-        where TODO_ID=$todoId;
+        where todo_id=$todoId;
       """
       .query[(Int, Element)]
       .to[List]
@@ -68,10 +68,10 @@ object TodoSql {
 
   def deleteTodoElementByElementId(elementId: Int): doobie.Update0 = sql"delete from todoelement where element_id=$elementId;".update
 
-  def deleteById(todoId: Int): doobie.Update0 = sql"delete from TODO where TODO_ID=$todoId".update
+  def deleteById(todoId: Int): doobie.Update0 = sql"delete from TODO where todo_id=$todoId".update
 
   def updateSQL(element: Element): doobie.Update0 =
-    sql"""update TODOELEMENT set
+    sql"""update todoelement set
             title=${element.title},
             completed=${element.completed},
             sort_order=${element.sortOrder}

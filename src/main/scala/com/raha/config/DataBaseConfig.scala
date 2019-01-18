@@ -4,20 +4,23 @@ import cats._
 import cats.effect.Async
 import cats.implicits._
 import doobie.hikari._
+import org.flywaydb.core.Flyway
+
+import scala.language.higherKinds
 
 case class DataBaseConfig(
-    driver: String,
-    url: String,
-    user: String,
-    password: String,
-    poolName: String,
-    poolSize: Int
-)
+                           driver: String,
+                           url: String,
+                           user: String,
+                           password: String,
+                           poolName: String,
+                           poolSize: Int
+                         )
 
 object DataBaseConfig {
 
-  def dbTransactor[F[_]: Async: Monad](
-      dataBaseConfig: DataBaseConfig): F[HikariTransactor[F]] =
+  def dbTransactor[F[_] : Async : Monad](
+                                          dataBaseConfig: DataBaseConfig): F[HikariTransactor[F]] =
     for {
       xa <- HikariTransactor.newHikariTransactor[F](
         dataBaseConfig.driver,
@@ -28,13 +31,17 @@ object DataBaseConfig {
       _ <- configure(dataBaseConfig.poolName, dataBaseConfig.poolSize, xa)
     } yield xa
 
-  private def configure[F[_]: Monad](
-      poolName: String,
-      poolSize: Int,
-      xa: HikariTransactor[F])(implicit monad: Monad[F]): F[Unit] = {
+  private def configure[F[_] : Monad](
+                                       poolName: String,
+                                       poolSize: Int,
+                                       xa: HikariTransactor[F]
+                                     )(implicit monad: Monad[F]): F[Unit] = {
     xa.configure { hx =>
       hx.setPoolName(poolName)
       hx.setMaximumPoolSize(poolSize) // (core * 2) + 1
+    val flyWay = new Flyway()
+      flyWay.setDataSource(hx)
+      flyWay.migrate()
       monad.unit
     }
   }

@@ -2,6 +2,8 @@ package com.raha.domain.user
 
 import cats.effect.Async
 
+import scala.language.higherKinds
+
 class UserService[F[_] : Async](userRepository: UserRepository[F]) {
 
   def createUser(user: User): F[Int] =

@@ -9,8 +9,8 @@ lazy val root = (project in file("."))
     libraryDependencies ++= doobie,
     libraryDependencies ++= http4s,
     libraryDependencies ++= common,
-    flywayUrl := "jdbc:mysql://localhost:3306/world",
-    flywayUser := "root",
+    flywayUrl := "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+    flywayUser := "sa",
     flywayLocations += "db/migration"
   )
   .settings(

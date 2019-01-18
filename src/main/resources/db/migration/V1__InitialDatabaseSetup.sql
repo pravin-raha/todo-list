@@ -1,21 +1,21 @@
-CREATE TABLE TODO (
-    TODO_ID  SERIAL  ,
-    USER_ID  INT ,
-    PRIMARY KEY(TODO_ID)
+CREATE TABLE todo (
+    todo_id  SERIAL  ,
+    user_id  INT ,
+    PRIMARY KEY(todo_id)
 );
 
 CREATE TABLE TODOELEMENT (
-    ELEMENT_ID  SERIAL,
-    TODO_ID  INT NOT NULL,
-    TITLE VARCHAR(100) NOT NULL,
-    COMPLETED BOOLEAN,
-    SORT_ORDER INT,
-    PRIMARY KEY(ELEMENT_ID)
+    element_id  SERIAL,
+    todo_id  INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    completed BOOLEAN,
+    sort_order INT,
+    PRIMARY KEY(element_id)
 );
 
-CREATE TABLE USERS (
-    ID  SERIAL,
-    NAME VARCHAR(100) NOT NULL,
-    EMAIL VARCHAR(100) NOT NULL,
-    PRIMARY KEY (ID)
+CREATE TABLE users (
+    id  SERIAL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
 );
