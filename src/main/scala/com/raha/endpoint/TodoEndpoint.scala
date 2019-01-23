@@ -1,4 +1,4 @@
-package com.raha.service
+package com.raha.endpoint
 
 import cats.effect.Async
 import cats.syntax.all._
@@ -22,28 +22,28 @@ class TodoEndpoint[F[_] : Async](todoService: TodoService[F]) extends Http4sDsl[
     case GET -> Root / "todo" / IntVar(id) => todoService.get(id).flatMap {
       case Some(todo) => Ok(todo.asJson)
       case None => NotFound("Todo Item not found")
-    }.handleErrorWith(e => ServiceUnavailable())
+    }.handleErrorWith(_ => ServiceUnavailable())
 
     case GET -> Root / "todo" => todoService.getAll(101).flatMap(t => Ok(t.asJson))
 
     case req@POST -> Root / "todo" => for {
       elementForm <- req.as[ElementForm]
       res <- todoService.createTodo(101, elementForm)
-        .flatMap(e => Ok())
-        .handleErrorWith(e => ServiceUnavailable())
+        .flatMap(_ => Ok())
+        .handleErrorWith(_ => ServiceUnavailable())
     } yield res
 
     case req@POST -> Root / "todo" / IntVar(todoId) => for {
       elementForm <- req.as[ElementForm]
       res <- todoService.createElement(todoId, elementForm)
-        .flatMap(e => Ok())
-        .handleErrorWith(e => ServiceUnavailable())
+        .flatMap(_ => Ok())
+        .handleErrorWith(_ => ServiceUnavailable())
     } yield res
 
     case DELETE -> Root / "todo" / IntVar(todoId) => todoService.deleteTodo(todoId).flatMap(_ => Ok("todo deleted"))
 
     case DELETE -> Root / "todo" / IntVar(todoId) / IntVar(elementId) =>
-      todoService.deleteTodoElement(elementId).flatMap(_ => Ok("element deleted"))
+      todoService.deleteTodoElement(elementId).flatMap(_ => Ok(s"Element deleted with id: $todoId "))
 
     case req@PUT -> Root / "todo" / IntVar(todoId) => for {
       element <- req.as[Element]

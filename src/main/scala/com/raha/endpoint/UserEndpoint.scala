@@ -1,4 +1,4 @@
-package com.raha.service
+package com.raha.endpoint
 
 import _root_.io.chrisdavenport.log4cats._
 import cats.effect.Async

@@ -1,5 +1,7 @@
 package com.raha.domain.todo
 
+import scala.language.higherKinds
+
 trait TodoRepository[F[_]] {
 
   def addElement(todoId: Int, elementForm: ElementForm): F[Int]
