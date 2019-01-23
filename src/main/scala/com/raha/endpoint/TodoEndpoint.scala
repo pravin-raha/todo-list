@@ -1,4 +1,4 @@
-package com.raha.service
+package com.raha.endpoint
 
 import cats.effect.Async
 import cats.syntax.all._
