@@ -12,9 +12,11 @@ import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import doobie.util.log.LogHandler
 
+import scala.language.higherKinds
+
 object TodoSql {
 
-  implicit val han = LogHandler.jdkLogHandler
+  implicit val han: LogHandler = LogHandler.jdkLogHandler
 
   def insertTodoSql(userId: Int, element: ElementForm): ConnectionIO[Int] =
     for {

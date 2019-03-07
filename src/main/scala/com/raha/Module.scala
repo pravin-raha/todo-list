@@ -12,6 +12,8 @@ import org.http4s.HttpRoutes
 import org.http4s.client.Client
 import cats.syntax.semigroupk._
 
+import scala.language.higherKinds
+
 class Module[F[_]](client: Client[F], xa: HikariTransactor[F])(
   implicit F: ConcurrentEffect[F],
   CS: ContextShift[F],

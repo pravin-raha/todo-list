@@ -8,6 +8,8 @@ import doobie.implicits._
 import doobie.util.log.LogHandler
 import doobie.util.update.Update0
 
+import scala.language.higherKinds
+
 private object UserSql {
   def insert(user: User): Update0 =
     sql"insert into USER (id, name, email) values (${user.id.get}, ${user.name}, ${user.email})".updateWithLogHandler(LogHandler.jdkLogHandler)

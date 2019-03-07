@@ -1,5 +1,7 @@
 package com.raha.domain.user
 
+import scala.language.higherKinds
+
 trait UserRepository[F[_]] {
 
   def create(user: User): F[Int]
