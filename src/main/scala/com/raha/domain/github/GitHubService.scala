@@ -2,25 +2,23 @@ package com.raha.domain.github
 
 import cats.effect.Sync
 import cats.syntax.functor._
+import com.raha.config.OidcConfig
 import fs2.Stream
 import io.circe.generic.auto._
 import org.http4s.circe._
 import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.{Header, Request, Uri}
+import pureconfig.loadConfigOrThrow
 
 import scala.language.higherKinds
 
-// See: https://developer.github.com/apps/building-oauth-apps/authorization-options-for-oauth-apps/#web-application-flow
-class GitHubService[F[_]: Sync](client: Client[F]) extends Http4sClientDsl[F] {
+class GitHubService[F[_] : Sync](client: Client[F]) extends Http4sClientDsl[F] {
 
-  // NEVER make this data public! This is just a demo!
-  private val ClientId = "959ea01cd3065cad274a"
-  private val ClientSecret = "53901db46451977e6331432faa2616ba24bc2550"
-
-  private val RedirectUri = s"http://localhost:8080/login/github"
-
-  case class AccessTokenResponse(access_token: String)
+  private lazy val oidcConfig = loadConfigOrThrow[OidcConfig]("oidc")
+  private lazy val ClientId = oidcConfig.cliendId
+  private lazy val ClientSecret = oidcConfig.clientSecret
+  private lazy val RedirectUri = oidcConfig.redirectUrl
 
   val authorize: Stream[F, Byte] = {
     val uri = Uri
@@ -56,4 +54,10 @@ class GitHubService[F[_]: Sync](client: Client[F]) extends Http4sClientDsl[F] {
     client.expect[String](request)
   }
 
+  private case class AccessTokenResponse(access_token: String)
+
+}
+
+object GitHubService {
+  def apply[F[_] : Sync](client: Client[F]): GitHubService[F] = new GitHubService[F](client)
 }
