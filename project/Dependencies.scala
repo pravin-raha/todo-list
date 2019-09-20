@@ -21,8 +21,8 @@ object Dependencies {
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
     "org.http4s" %% "http4s-blaze-client" % http4sVersion,
     "org.http4s" %% "http4s-circe" % http4sVersion,
-    "io.circe" %% "circe-generic" % "0.10.0-M1",
-    "io.circe" %% "circe-literal" % "0.10.0-M1"
+    "io.circe" %% "circe-generic" % "0.10.1",
+    "io.circe" %% "circe-literal" % "0.10.1"
   ) ++ tsec
 
   lazy val common = Seq(
