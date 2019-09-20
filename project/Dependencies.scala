@@ -27,7 +27,7 @@ object Dependencies {
 
   lazy val common = Seq(
     "mysql" % "mysql-connector-java" % "5.1.24",
-    "org.typelevel" %% "cats-core" % "1.2.0",
+    "org.typelevel" %% "cats-core" % "1.6.1",
     "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
     "com.github.pureconfig" %% "pureconfig" % "0.9.2",
     "io.chrisdavenport" %% "log4cats-slf4j" % "0.1.1",
