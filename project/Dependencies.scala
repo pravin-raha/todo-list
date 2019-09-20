@@ -5,7 +5,7 @@ object Dependencies {
   lazy val doobieVersion = "0.5.3"
   lazy val http4sVersion = "0.20.0-M5"
   lazy val flywayDb = "5.1.4"
-  lazy val tsecV = "0.0.1-M11"
+  lazy val tsecV = "0.2.0-M1"
 
   lazy val doobie = Seq(
     "org.tpolecat" %% "doobie-core" % doobieVersion,
