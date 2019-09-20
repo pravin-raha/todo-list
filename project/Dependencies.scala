@@ -32,7 +32,7 @@ object Dependencies {
     "com.github.pureconfig" %% "pureconfig" % "0.9.2",
     "io.chrisdavenport" %% "log4cats-slf4j" % "0.1.1",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
-    "io.scalaland" %% "chimney" % "0.2.1"
+    "io.scalaland" %% "chimney" % "0.3.2"
   )
 
   lazy val tsec = Seq(
