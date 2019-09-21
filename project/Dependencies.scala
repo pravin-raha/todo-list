@@ -26,7 +26,7 @@ object Dependencies {
   ) ++ tsec
 
   lazy val common = Seq(
-    "mysql" % "mysql-connector-java" % "5.1.24",
+    "mysql" % "mysql-connector-java" % "5.1.48",
     "org.typelevel" %% "cats-core" % "1.2.0",
     "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
     "com.github.pureconfig" %% "pureconfig" % "0.9.2",
