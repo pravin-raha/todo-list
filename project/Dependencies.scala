@@ -4,7 +4,7 @@ object Dependencies {
 
   lazy val doobieVersion = "0.5.3"
   lazy val http4sVersion = "0.20.0-M5"
-  lazy val flywayDb = "5.1.4"
+  lazy val flywayDb = "5.2.4"
   lazy val tsecV = "0.0.1-M11"
 
   lazy val doobie = Seq(
