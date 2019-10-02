@@ -30,7 +30,7 @@ object Dependencies {
     "mysql" % "mysql-connector-java" % "5.1.48",
     "org.typelevel" %% "cats-effect" % "1.0.0",
     "com.github.pureconfig" %% "pureconfig" % "0.9.2",
-    "io.chrisdavenport" %% "log4cats-slf4j" % "0.1.1",
+    "io.chrisdavenport" %% "log4cats-slf4j" % "0.3.0",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "io.scalaland" %% "chimney" % "0.3.2"
   )
