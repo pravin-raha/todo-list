@@ -11,6 +11,7 @@ import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.client.middleware.FollowRedirect
 import org.http4s.{Header, Headers, Request, Uri}
 import pureconfig.loadConfigOrThrow
+import pureconfig.generic.auto._
 
 import scala.language.higherKinds
 

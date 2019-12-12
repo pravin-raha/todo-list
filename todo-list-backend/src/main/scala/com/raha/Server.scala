@@ -13,6 +13,7 @@ import org.http4s.server.Router
 import org.http4s.server.blaze._
 import org.http4s.syntax.all._
 import pureconfig.loadConfigOrThrow
+import pureconfig.generic.auto._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.higherKinds

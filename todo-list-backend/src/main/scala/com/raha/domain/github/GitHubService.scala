@@ -10,6 +10,7 @@ import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.{Header, Request, Uri}
 import pureconfig.loadConfigOrThrow
+import pureconfig.generic.auto._
 
 import scala.language.higherKinds
 
